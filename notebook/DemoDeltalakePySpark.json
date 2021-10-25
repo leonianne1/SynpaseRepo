@@ -1,43 +1,82 @@
 {
-	"name": "Notebook 1",
+	"name": "DemoDeltalakePySpark",
 	"properties": {
 		"nbformat": 4,
 		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "SparkPool01",
+			"type": "BigDataPoolReference"
+		},
 		"sessionProperties": {
-			"driverMemory": "28g",
-			"driverCores": 4,
-			"executorMemory": "28g",
-			"executorCores": 4,
+			"driverMemory": "56g",
+			"driverCores": 8,
+			"executorMemory": "56g",
+			"executorCores": 8,
 			"numExecutors": 2,
 			"conf": {
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "b7a9b134-632f-42fe-a1b0-ff24e6e68384"
+				"spark.autotune.trackingId": "3e3bf7b8-1352-4688-a330-5ca21a677dbc"
 			}
 		},
 		"metadata": {
 			"saveOutput": true,
-			"synapse_widget": {
-				"version": "0.1"
-			},
 			"enableDebugMode": false,
 			"kernelspec": {
 				"name": "synapse_pyspark",
-				"display_name": "python"
+				"display_name": "Synapse PySpark"
 			},
 			"language_info": {
 				"name": "python"
-			}
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/ee1067f6-c197-4e8b-a1a8-4705de78c3fb/resourceGroups/Synpase-Analytics-GA/providers/Microsoft.Synapse/workspaces/asaworkspacesynapseal/bigDataPools/SparkPool01",
+				"name": "SparkPool01",
+				"type": "Spark",
+				"endpoint": "https://asaworkspacesynapseal.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/SparkPool01",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "2.4",
+				"nodeCount": 3,
+				"cores": 8,
+				"memory": 56,
+				"automaticScaleJobs": false
+			},
+			"sessionKeepAliveTimeout": 30
 		},
 		"cells": [
 			{
 				"cell_type": "code",
 				"source": [
-					""
+					"# Creation d'un dataframe df1 avec des donnees de vente\r\n",
+					"\r\n",
+					"from pyspark.sql.types import StructType,StructField, StringType, IntegerType\r\n",
+					"saleSchema = StructType([ \\\r\n",
+					"    StructField(\"item\",StringType(),True), \\\r\n",
+					"    StructField(\"customer\",IntegerType(),True), \\\r\n",
+					"    StructField(\"quantity\",IntegerType(),True), \\\r\n",
+					"    StructField(\"price\", DecimalType(), True) \\\r\n",
+					"  ])\r\n",
+					"\r\n",
+					"\r\n",
+					"saleData = [(\"cheese\",1,1,5.0),\r\n",
+					"    (\"bread\",1,1,1.0)\r\n",
+					"  ]\r\n",
+					"\r\n",
+					"\r\n",
+					"df = spark.createDataFrame(data=data2,schema=saleSchema)\r\n",
+					"df.printSchema()\r\n",
+					"df.show(truncate=False)\r\n",
+					"\r\n",
+					"#case class Sale(item: String, customer: Int, quantity: Int, price: Double)\r\n",
+					"#val sale1 = new Sale(\"cheese\", 1, 1, 5.0)\r\n",
+					"#val sale2 = new Sale(\"bread\", 1, 1, 1.0)\r\n",
+					"#val df1 = Seq(sale1, sale2).toDF()"
 				],
-				"attachments": null,
-				"execution_count": null
+				"execution_count": 1
 			}
 		]
 	}
