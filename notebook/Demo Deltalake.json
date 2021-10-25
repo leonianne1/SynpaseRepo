@@ -17,18 +17,18 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "0cc22eef-4867-4c20-b42f-1626b907c022"
+				"spark.autotune.trackingId": "46684c7b-d27f-4d48-9b80-73ecd653eb89"
 			}
 		},
 		"metadata": {
 			"saveOutput": true,
 			"enableDebugMode": false,
 			"kernelspec": {
-				"name": "synapse_pyspark",
-				"display_name": "Synapse PySpark"
+				"name": "synapse_spark",
+				"display_name": "Synapse Spark"
 			},
 			"language_info": {
-				"name": "python"
+				"name": "scala"
 			},
 			"a365ComputeOptions": {
 				"id": "/subscriptions/ee1067f6-c197-4e8b-a1a8-4705de78c3fb/resourceGroups/Synpase-Analytics-GA/providers/Microsoft.Synapse/workspaces/asaworkspacesynapseal/bigDataPools/SparkPool01",
@@ -43,8 +43,9 @@
 				"nodeCount": 3,
 				"cores": 8,
 				"memory": 56,
-				"extraHeader": null
-			}
+				"automaticScaleJobs": false
+			},
+			"sessionKeepAliveTimeout": 30
 		},
 		"cells": [
 			{
@@ -56,18 +57,16 @@
 					"val sale2 = new Sale(\"bread\", 1, 1, 1.0)\n",
 					"val df1 = Seq(sale1, sale2).toDF()"
 				],
-				"attachments": null,
-				"execution_count": 1
+				"execution_count": 5
 			},
 			{
 				"cell_type": "code",
 				"source": [
-					"df1.write.format(\"delta\").save(\"abfss://wwi-02@asadatalakesynapseal.dfs.core.windows.net/sales\")\n",
-					"//spark.sql(\"CREATE TABLE sales USING DELTA LOCATION 'abfss://demo@myec44datalake.dfs.core.windows.net/sales'\")\n",
+					"df1.write.format(\"delta\").mode(\"overwrite\").save(\"abfss://wwi-02@asadatalakesynapseal.dfs.core.windows.net/sales\")\n",
+					"spark.sql(\"CREATE TABLE sales USING DELTA LOCATION 'abfss://wwi-02@asadatalakesynapseal.dfs.core.windows.net/sales'\")\n",
 					""
 				],
-				"attachments": null,
-				"execution_count": 2
+				"execution_count": 10
 			},
 			{
 				"cell_type": "code",
@@ -104,8 +103,7 @@
 					"SELECT * FROM sales\n",
 					""
 				],
-				"attachments": null,
-				"execution_count": 2
+				"execution_count": 11
 			},
 			{
 				"cell_type": "code",
@@ -150,18 +148,16 @@
 					"%%sql\r\n",
 					"DESCRIBE DETAIL 'abfss://wwi-02@asadatalakesynapseal.dfs.core.windows.net/sales'"
 				],
-				"attachments": null,
-				"execution_count": 3
+				"execution_count": 12
 			},
 			{
 				"cell_type": "code",
 				"source": [
-					"val sale3 = new Sale(\"wine\", 1, 2, 10.0)\n",
+					"val sale3 = new Sale(\"steack\", 1, 2, 10.0)\n",
 					"val df2 = Seq(sale3).toDF()\n",
-					"df2.write.format(\"delta\").mode(\"append\").save(\"abfss://demo@myec44datalake.dfs.core.windows.net/sales\")"
+					"df2.write.format(\"delta\").mode(\"append\").save(\"abfss://wwi-02@asadatalakesynapseal.dfs.core.windows.net/sales\")"
 				],
-				"attachments": null,
-				"execution_count": 4
+				"execution_count": 14
 			},
 			{
 				"cell_type": "code",
@@ -198,8 +194,7 @@
 					"-- DESCRIBE HISTORY sales\n",
 					"DESCRIBE HISTORY delta.`abfss://wwi-02@asadatalakesynapseal.dfs.core.windows.net/sales`"
 				],
-				"attachments": null,
-				"execution_count": 5
+				"execution_count": 15
 			},
 			{
 				"cell_type": "code",
@@ -213,8 +208,7 @@
 					"df = spark.read.format(\"delta\").option(\"versionAsOf\", 1).load(\"abfss://wwi-02@asadatalakesynapseal.dfs.core.windows.net/sales\")\r\n",
 					"df.show()"
 				],
-				"attachments": null,
-				"execution_count": 6
+				"execution_count": 16
 			},
 			{
 				"cell_type": "code",
@@ -246,8 +240,7 @@
 					"\r\n",
 					"sales.toDF().show()"
 				],
-				"attachments": null,
-				"execution_count": 7
+				"execution_count": 17
 			}
 		]
 	}
