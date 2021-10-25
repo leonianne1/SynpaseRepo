@@ -1,0 +1,12 @@
+{
+	"name": "asadatalakesynapseal",
+	"type": "Microsoft.Synapse/workspaces/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureBlobFS",
+		"typeProperties": {
+			"url": "https://asadatalakesynapseal.dfs.core.windows.net",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkFTQVdPUktTUEFDRVNZTkFQU0VBTF80YmExZTA5ZC04OGFkLTRiYWEtYWQ5OC1kOTZjZDIyMjY2ZWYiDQp9"
+		}
+	}
+}

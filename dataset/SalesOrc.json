@@ -1,0 +1,21 @@
+{
+	"name": "SalesOrc",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "asaworkspacesynapseal-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Orc",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "sale-orc",
+				"fileSystem": "wwi-02"
+			},
+			"enablePhysicalSchema": true
+		},
+		"schema": []
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

@@ -1,0 +1,29 @@
+{
+	"name": "wwwi_factsale_csv",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "asadatalakesynapseal",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "wwi-factsale.csv",
+				"folderPath": "sale-csv",
+				"fileSystem": "wwi-02"
+			},
+			"columnDelimiter": "|",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}
