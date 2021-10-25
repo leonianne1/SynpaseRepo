@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "3e3bf7b8-1352-4688-a330-5ca21a677dbc"
+				"spark.autotune.trackingId": "3d21ce4b-f04b-4c97-97e2-5b18c507d439"
 			}
 		},
 		"metadata": {
@@ -52,13 +52,12 @@
 				"cell_type": "code",
 				"source": [
 					"# Creation d'un dataframe df1 avec des donnees de vente\r\n",
-					"\r\n",
-					"from pyspark.sql.types import StructType,StructField, StringType, IntegerType\r\n",
+					"from pyspark.sql.types import StructType,StructField, StringType, IntegerType, FloatType\r\n",
 					"saleSchema = StructType([ \\\r\n",
 					"    StructField(\"item\",StringType(),True), \\\r\n",
 					"    StructField(\"customer\",IntegerType(),True), \\\r\n",
 					"    StructField(\"quantity\",IntegerType(),True), \\\r\n",
-					"    StructField(\"price\", DecimalType(), True) \\\r\n",
+					"    StructField(\"price\", FloatType(), True) \\\r\n",
 					"  ])\r\n",
 					"\r\n",
 					"\r\n",
@@ -66,17 +65,145 @@
 					"    (\"bread\",1,1,1.0)\r\n",
 					"  ]\r\n",
 					"\r\n",
-					"\r\n",
-					"df = spark.createDataFrame(data=data2,schema=saleSchema)\r\n",
-					"df.printSchema()\r\n",
-					"df.show(truncate=False)\r\n",
-					"\r\n",
-					"#case class Sale(item: String, customer: Int, quantity: Int, price: Double)\r\n",
-					"#val sale1 = new Sale(\"cheese\", 1, 1, 5.0)\r\n",
-					"#val sale2 = new Sale(\"bread\", 1, 1, 1.0)\r\n",
-					"#val df1 = Seq(sale1, sale2).toDF()"
+					"df1 = spark.createDataFrame(data=saleData,schema=saleSchema)"
 				],
-				"execution_count": 1
+				"execution_count": 33
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# write the data frame as a delta file\r\n",
+					"df1.write.format(\"delta\").mode(\"overwrite\").save(\"abfss://wwi-02@asadatalakesynapseal.dfs.core.windows.net/salesPySpark\")\r\n",
+					"spark.sql(\"DROP TABLE sales\")\r\n",
+					"spark.sql(\"CREATE TABLE sales USING DELTA LOCATION 'abfss://wwi-02@asadatalakesynapseal.dfs.core.windows.net/salesPySpark'\")"
+				],
+				"execution_count": 34
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"SELECT * FROM sales"
+				],
+				"execution_count": 35
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"#adding a steak\r\n",
+					"saleData2 = [(\"steak\",1,1,9.9)\r\n",
+					"  ]\r\n",
+					"df2 = spark.createDataFrame(data=saleData2,schema=saleSchema)\r\n",
+					"df2.write.format(\"delta\").mode(\"append\").save(\"abfss://wwi-02@asadatalakesynapseal.dfs.core.windows.net/salesPySpark\")"
+				],
+				"execution_count": 36
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"-- DESCRIBE HISTORY sales\r\n",
+					"DESCRIBE HISTORY delta.`abfss://wwi-02@asadatalakesynapseal.dfs.core.windows.net/salesPySpark`"
+				],
+				"execution_count": 37
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"df = spark.read.format(\"delta\").option(\"versionAsOf\", 0).load(\"abfss://wwi-02@asadatalakesynapseal.dfs.core.windows.net/salesPySpark\")\r\n",
+					"df.show()"
+				],
+				"execution_count": 40
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"from delta.tables import *\r\n",
+					"from pyspark.sql.functions import *\r\n",
+					"\r\n",
+					"sales = DeltaTable.forPath(spark, \"abfss://wwi-02@asadatalakesynapseal.dfs.core.windows.net/salesPySpark\")\r\n",
+					"sales.update(\r\n",
+					"    condition= expr(\"item == 'cheese'\"),\r\n",
+					"    set = { \"quantity\": expr(\"3\")}\r\n",
+					")\r\n",
+					"\r\n",
+					"sales.toDF().show()"
+				],
+				"execution_count": 39
 			}
 		]
 	}
