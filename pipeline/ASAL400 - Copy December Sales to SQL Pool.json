@@ -1,5 +1,5 @@
 {
-	"name": "ASAL400 - Copy December Sales",
+	"name": "ASAL400 - Copy December Sales to SQL Pool",
 	"properties": {
 		"activities": [
 			{
@@ -155,7 +155,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "asal400_saleheap_asa",
+						"referenceName": "SQLPoolDemoStagingSaleHeap",
 						"type": "DatasetReference"
 					}
 				]
