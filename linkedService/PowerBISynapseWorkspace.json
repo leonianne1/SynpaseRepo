@@ -1,0 +1,12 @@
+{
+	"name": "PowerBISynapseWorkspace",
+	"properties": {
+		"description": "Connected to my dev workspace",
+		"annotations": [],
+		"type": "PowerBIWorkspace",
+		"typeProperties": {
+			"workspaceID": "7ebea253-6aba-4e28-a1b9-671e19871dcc",
+			"tenantID": "72f988bf-86f1-41af-91ab-2d7cd011db47"
+		}
+	}
+}
